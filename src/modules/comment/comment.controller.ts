@@ -40,8 +40,46 @@ const getCommentsByAuthor = async (req: Request, res: Response) => {
     });
   }
 };
+
+const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const { commentId } = req.params;
+    const result = await commentService.deleteComment(
+      commentId as string,
+      user?.id as string
+    );
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(400).json({
+      error: "Comment delete failed",
+      details: e,
+    });
+  }
+};
+
+const updateComment = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const { commentId } = req.params;
+    const result = await commentService.updateComment(
+      commentId as string,
+      req.body,
+      user?.id as string
+    );
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(400).json({
+      error: "Comment update failed",
+      details: e,
+    });
+  }
+};
+
 export const commentController = {
   createComment,
   getCommentById,
   getCommentsByAuthor,
+  deleteComment,
+  updateComment,
 };

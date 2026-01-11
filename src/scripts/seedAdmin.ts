@@ -4,8 +4,8 @@ import { UserRole } from "../middleware/auth";
 const seedAdmin = async () => {
   try {
     const adminData = {
-      name: DEFAULT_ADMIN_NAME,
-      email: DEFAULT_ADMIN_EMAIL,
+      name: process.env.DEFAULT_ADMIN_NAME,
+      email: process.env.DEFAULT_ADMIN_EMAIL,
       role: UserRole.ADMIN,
       password: "admin11234",
       emailVarified: true,
@@ -13,7 +13,7 @@ const seedAdmin = async () => {
     // check user exist on db or not
     const existingUser = await prisma.user.findUnique({
       where: {
-        email: adminData.email,
+        email: adminData.email as string,
       },
     });
 
@@ -36,7 +36,7 @@ const seedAdmin = async () => {
 
     if (signUpAdmin) {
       await prisma.user.update({
-        where: { email: adminData.email },
+        where: { email: adminData.email as string },
         data: {
           emailVerified: true,
         },
