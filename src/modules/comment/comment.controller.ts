@@ -1,47 +1,54 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { commentService } from "./comment.service";
 
-const createComment = async (req: Request, res: Response) => {
+const createComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = req.user;
     req.body.authorId = user?.id;
     const result = await commentService.createComment(req.body);
     res.status(201).json(result);
   } catch (e) {
-    res.status(400).json({
-      error: "Comment creation failed",
-      details: e,
-    });
+    next(e);
   }
 };
 
-const getCommentById = async (req: Request, res: Response) => {
+const getCommentById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { commentId } = req.params;
     const result = await commentService.getCommentById(commentId as string);
     res.status(200).json(result);
   } catch (e) {
-    res.status(400).json({
-      error: "Comment fetched failed",
-      details: e,
-    });
+    next(e);
   }
 };
 
-const getCommentsByAuthor = async (req: Request, res: Response) => {
+const getCommentsByAuthor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { authorId } = req.params;
     const result = await commentService.getCommentsByAuthor(authorId as string);
     res.status(200).json({ result });
   } catch (e) {
-    res.status(400).json({
-      error: "Comment fetched failed",
-      details: e,
-    });
+    next(e);
   }
 };
 
-const deleteComment = async (req: Request, res: Response) => {
+const deleteComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = req.user;
     const { commentId } = req.params;
@@ -51,14 +58,15 @@ const deleteComment = async (req: Request, res: Response) => {
     );
     res.status(200).json(result);
   } catch (e) {
-    res.status(400).json({
-      error: "Comment delete failed",
-      details: e,
-    });
+    next(e);
   }
 };
 
-const updateComment = async (req: Request, res: Response) => {
+const updateComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = req.user;
     const { commentId } = req.params;
@@ -69,14 +77,15 @@ const updateComment = async (req: Request, res: Response) => {
     );
     res.status(200).json(result);
   } catch (e) {
-    res.status(400).json({
-      error: "Comment update failed",
-      details: e,
-    });
+    next(e);
   }
 };
 
-const moderateComment = async (req: Request, res: Response) => {
+const moderateComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { commentId } = req.params;
 
@@ -86,10 +95,7 @@ const moderateComment = async (req: Request, res: Response) => {
     );
     res.status(200).json(result);
   } catch (e: any) {
-    res.status(400).json({
-      error: e.message || "Comment update failed!",
-      details: e,
-    });
+    next(e);
   }
 };
 
